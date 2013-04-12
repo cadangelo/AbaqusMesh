@@ -67,38 +67,63 @@ for line in f:
 # j is elset counter
 j=0
 
+list_firstEl.append(len(list_firstEl)+1)
+
 new_element=[]
 
-# loop over the members of list_element
+print list_firstEl
+
 for l in range(0,len(list_element)):
-# if the current element is equal to where a new element begins
-     if int(list_element[l]) == int(list_firstEl[j]):
-	# if we are not on the final elset increment j
-	if j < len(list_firstEl)-1:
-	    j=j+1
-	# otherwise do nothing
-        else:
-            j=j
-     # new value is the original value - start value + 1
-     newEl=(int(list_element[l])-int(list_firstEl[j]) + 1)
-     new_element.append(newEl)
-     
+#      print list_element[l],int(list_element[l])-int(list_firstEl[j])+1
+      if int(list_element[l]) == int(list_firstEl[j+1]):
+         j=j+1
+      print list_element[l],int(list_element[l])-int(list_firstEl[j])+1
+
+
+""""
+      print j,list_element[l],int(list_element[l])-int(list_firstEl[j])+1
+      if int(list_element[l]) == int(list_firstEl[j+1]):
+#	   print list_element[l],list_firstEl[j]
+#           print j
+           if (j < len(list_firstEl)-1 ):
+	        j=j+1
+
+"""
+exit()
 
 # loop over the members of list_element
 for l in range(0,len(list_element)):
 # if the current element is equal to where a new element begins
      if int(list_element[l]) == int(list_firstEl[j]):
 	# if we are not on the final elset increment j
-	if j < len(list_firstEl)-1:
+	if j <= (len(list_firstEl)-1):
 	    j=j+1
-#	    print "*ELSET=EB"
 	# otherwise do nothing
         else:
             j=j
-#	    print "*ELSET=EB"
      # new value is the original value - start value + 1
-     print new_element[l]#,list_node[l]
-#     g.write(str(new_element))	
+     newEl=(int(list_element[l])-int(list_firstEl[j-1]) + 1)
+#     print int(list_firstEl[j])
+     new_element.append(newEl)
+     print list_element[l], new_element[l], list_firstEl[j-1], j #,list_node[l]
+#g.write(str(new_element[l]))	    
+
+
+# loop over the members of list_element
+for l in range(0,len(list_element)):
+# if the current element is equal to where a new element begins
+     if int(list_element[l]) == int(list_firstEl[j]):
+	# if we are not on the final elset increment j
+	if j < (len(list_firstEl)-1):
+	    j=j+1
+	    print "*ELSET=EB1"
+	# otherwise do nothing
+        else:
+            j=j
+	    print "*ELSET=EB4"
+     # new value is the original value - start value + 1
+     print list_element[l], new_element[l], list_firstEl[j] #,list_node[l]
+     g.write(str(new_element))	
 
 #print list_element[-1] #,list_node
 #print list_element[-1],list_node[-1]
