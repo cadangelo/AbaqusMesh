@@ -10,17 +10,38 @@ print 'hello python'
   
 def splitbycomma(line):
       nodes=[]
-      firstline=line.split(',',1)
-      el_num = firstline[0]
-      remainder=firstline[1]
+      splitLine=line.split(',',1)
+      el_num = splitLine[0]
+      remainder=splitLine[1]
       for i in range(1,4):
 	    node = str(remainder).split(',',1)
             remainder=node[1]
             nodes.append(node[0])
             if i==3:
-                  nodes.append(node[1])     
+		  test=node[1].split('\n', 1)   
+		  string=test[0]
+
+                  nodes.append(string)  
+
       return el_num,nodes
 
+def dump_header ():
+      f.seek(0)
+      g.seek(0)
+
+      for line in f:
+            g.write(line)
+            if '*ELEMENT, TYPE=C3D4, ELSET=EB1' in  line:
+                break  
+
+def dump_footer ():
+      flag = 0
+      for line in f:
+            if '**' in  line:
+                  flag = 1
+            if flag == 1:
+                  g.write(line)
+ 
 
 # open a mesh file
 f = open('sr_mesh220.inp','r')
@@ -35,49 +56,77 @@ list_element=[]
 list_node=[]
 list_firstEl=[]
 
+
+
+
 for line in f:
-#     i=i+1
-     if '*ELEMENT' in line:  #If *ELEMENT is in the line, 
+     if '*ELEMENT' in line:  
           flag=1
      if '**\n' in line:
           val=0
 
      if ( flag == 1):
 	if '*ELEMENT' not in line: 
-	  splitLine=line.split(',',1)
-          firstElNum=int(splitLine[0])
-	  list_firstEl.append(firstElNum)
+          firstLine=line.split(',',1)
+          firstElNum=int(firstLine[0])
+          list_firstEl.append(firstElNum)
 	  firstEl=list_firstEl[-1]
-	  flag=0
 	  val=1
-
+          flag=0
+                  
      if  ( val == 1 and flag == 0 ):
 	(el_num,nodes)=splitbycomma(line)
 	list_element.append(el_num)
 	list_node.append(nodes)
-#	print list_element[-1]
-#	print list_firstEl[0]
+       	
 
-#	print newEl
-#	list_newEl.append(newEl, geldof)
-#	firstElNum=getFirstEl(line)
-#	list_firstEl.append(firstElNum)
-#	StartEl=list_firstEl[-1]
 
+     if (val == 0):
+          writeLine=line    
+ #         g.write(writeLine)
 # j is elset counter
 j=0
-
-list_firstEl.append(len(list_firstEl)+1)
+list_firstEl.append(len(list_firstEl)+1) 
 
 new_element=[]
+new_line=[]
 
-print list_firstEl
+dump_header()
 
 for l in range(0,len(list_element)):
 #      print list_element[l],int(list_element[l])-int(list_firstEl[j])+1
       if int(list_element[l]) == int(list_firstEl[j+1]):
          j=j+1
-      print list_element[l],int(list_element[l])-int(list_firstEl[j])+1
+	 g.write('*ELSET=EB'+str( j+1)+'\n')
+#	 writeLine='*ELSET=EB', j+1
+      fixedElNum=(int(list_element[l])-int(list_firstEl[j])+1)
+      new_element.append(fixedElNum)
+      fixedLine=str(new_element[l])+ str(list_node[l])
+      new_line.append(fixedLine)
+      writeLine=new_line[-1]
+#      print str(new_element[l]),(list_node[l])
+      
+#      print writeLine
+      g.write(writeLine + '\n')
+     
+     
+"""
+      fixedLine=str(new_element[l])+ (list_node[l])
+      new_line.append(fixedLine)
+      writeLine=(new_line[l])
+#      print writeLine
+      
+#      print writeLine
+ #     print newLine 
+ #     print list_element[l],int(list_element[l])-int(list_firstEl[j])+1
+
+"""
+dump_footer()
+
+f.close()
+g.close()
+exit()
+
 
 
 """"
@@ -87,9 +136,8 @@ for l in range(0,len(list_element)):
 #           print j
            if (j < len(list_firstEl)-1 ):
 	        j=j+1
-
 """
-exit()
+
 
 # loop over the members of list_element
 for l in range(0,len(list_element)):
@@ -105,7 +153,7 @@ for l in range(0,len(list_element)):
      newEl=(int(list_element[l])-int(list_firstEl[j-1]) + 1)
 #     print int(list_firstEl[j])
      new_element.append(newEl)
-     print list_element[l], new_element[l], list_firstEl[j-1], j #,list_node[l]
+#     print list_element[l], new_element[l], list_firstEl[j-1], j #,list_node[l]
 #g.write(str(new_element[l]))	    
 
 
@@ -122,8 +170,8 @@ for l in range(0,len(list_element)):
             j=j
 	    print "*ELSET=EB4"
      # new value is the original value - start value + 1
-     print list_element[l], new_element[l], list_firstEl[j] #,list_node[l]
-     g.write(str(new_element))	
+#     print list_element[l], new_element[l], list_firstEl[j] #,list_node[l]
+#     g.write(str(new_element))	
 
 #print list_element[-1] #,list_node
 #print list_element[-1],list_node[-1]
