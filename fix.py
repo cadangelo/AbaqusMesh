@@ -97,16 +97,24 @@ for l in range(0,len(list_element)):
 #      print list_element[l],int(list_element[l])-int(list_firstEl[j])+1
       if int(list_element[l]) == int(list_firstEl[j+1]):
          j=j+1
-	 g.write('*ELSET=EB'+str( j+1)+'\n')
+	 g.write('*ELEMENT, TYPE=C3D4, ELSET=EB'+str( j+1)+'\n')
 #	 writeLine='*ELSET=EB', j+1
       fixedElNum=(int(list_element[l])-int(list_firstEl[j])+1)
       new_element.append(fixedElNum)
-      fixedLine=str(new_element[l])+ str(list_node[l])
+#      for i in range(0,3):
+#            nodes=str(splitbycomma(l))
+#      fixedLine=str(new_element[l])+ str(list_node[l])
+      node1=str(list_node[l]).split(',')[0].strip("['']")
+      node2=str(list_node[l]).split(',')[1].strip("'  ")
+      node3=str(list_node[l]).split(',')[2].strip("'  ")
+      node4=str(list_node[l]).split(',')[3].strip("'  ']")
+      fixedLine=str(new_element[l])+','+ node1 +',    '+ node2+',    '+ node3+',    '+ node4
       new_line.append(fixedLine)
       writeLine=new_line[-1]
-#      print str(new_element[l]),(list_node[l])
-      
+#      writeLine=writeLine.replace('[', '').replace(']', '')
+      #      print str(new_element[l]),(list_node[l])
 #      print writeLine
+      print fixedLine
       g.write(writeLine + '\n')
      
      
